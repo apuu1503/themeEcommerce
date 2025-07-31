@@ -269,6 +269,7 @@ const Home = () => {
             <style>{`
                 * {
                     box-sizing: border-box;
+                    
                 }
 
                 .main-container {
@@ -276,7 +277,7 @@ const Home = () => {
                     background: var(--bg);
                     font-family: var(--font);
                     color: var(--text);
-                    transition: all 0.3s ease;
+                    transition: all 0.3s ease;  
                 }
 
                 .content-wrapper {
