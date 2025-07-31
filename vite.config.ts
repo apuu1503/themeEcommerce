@@ -6,5 +6,5 @@ const repoName = 'themeEcommerce'
 
 export default defineConfig({
   plugins: [react()],
-  base: `/${repoName}/`, // important!
+base: "/"
 })
