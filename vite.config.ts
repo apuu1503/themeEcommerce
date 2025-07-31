@@ -1,7 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 
-// https://vite.dev/config/
+// Replace with your GitHub repo name
+const repoName = 'themeEcommerce'
+
 export default defineConfig({
   plugins: [react()],
+  base: `/${repoName}/`, // important!
 })

@@ -11,38 +11,51 @@ interface Product {
     category: string;
 }
 
+interface Theme {
+    name: string;
+    icon: React.ElementType;
+    description: string;
+}
+
+interface ThemeTabProps {
+    themeKey: string;
+    theme: Theme;
+    isActive: boolean;
+    onClick: (themeKey: string) => void;
+}
+
 const Home = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
-    const [currentTheme, setCurrentTheme] = useState("theme1");
-    const [loading, setLoading] = useState(true);
-    const [search, setSearch] = useState("");
+    const [currentTheme, setCurrentTheme] = useState<string>("theme1");
+    const [loading, setLoading] = useState<boolean>(true);
+    const [search, setSearch] = useState<string>("");
     const [categories, setCategories] = useState<string[]>([]);
     const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
-    const themes = {
+    const themes: Record<string, Theme> = {
         theme1: {
             name: "Clean Light",
             icon: Sun,
-            description: "Modern & Minimal"
+            description: "Modern & Minimal",
         },
         theme2: {
             name: "Dark Pro",
             icon: Moon,
-            description: "Professional Dark"
+            description: "Professional Dark",
         },
         theme3: {
             name: "Warm Cozy",
             icon: Heart,
-            description: "Playful & Friendly"
-        }
+            description: "Playful & Friendly",
+        },
     };
 
     useEffect(() => {
         const root = document.documentElement;
         root.className = currentTheme;
 
-        const themeStyles = {
+        const themeStyles: Record<string, Record<string, string>> = {
             theme1: {
                 '--font': "'Inter', sans-serif",
                 '--bg': 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)',
@@ -55,7 +68,7 @@ const Home = () => {
                 '--border': '#e2e8f0',
                 '--input-bg': '#ffffff',
                 '--input-border': '#d1d5db',
-                '--input-focus': '#3b82f6'
+                '--input-focus': '#3b82f6',
             },
             theme2: {
                 '--font': "'Merriweather', serif",
@@ -69,7 +82,7 @@ const Home = () => {
                 '--border': '#334155',
                 '--input-bg': '#334155',
                 '--input-border': '#475569',
-                '--input-focus': '#8b5cf6'
+                '--input-focus': '#8b5cf6',
             },
             theme3: {
                 '--font': "'Pacifico', cursive",
@@ -83,8 +96,8 @@ const Home = () => {
                 '--border': '#fed7aa',
                 '--input-bg': '#fffbeb',
                 '--input-border': '#fbbf24',
-                '--input-focus': '#f59e0b'
-            }
+                '--input-focus': '#f59e0b',
+            },
         };
 
         Object.entries(themeStyles[currentTheme]).forEach(([key, value]) => {
@@ -103,11 +116,13 @@ const Home = () => {
     useEffect(() => {
         fetch("https://fakestoreapi.com/products?limit=20")
             .then((res) => res.json())
-            .then((data) => {
-                setProducts(data);
-                // Extract unique categories
-                const uniqueCategories = ["all", ...Array.from(new Set(data.map(p => p.category)))];
-                setCategories(uniqueCategories);
+            .then((data: unknown) => {
+                if (Array.isArray(data)) {
+                    const typedData = data as Product[];
+                    setProducts(typedData);
+                    const uniqueCategories = ["all", ...Array.from(new Set(typedData.map(p => p.category)))];
+                    setCategories(uniqueCategories);
+                }
                 setLoading(false);
             })
             .catch(() => setLoading(false));
@@ -115,23 +130,21 @@ const Home = () => {
 
     useEffect(() => {
         let temp = [...products];
-        
-        // Filter by category
+
         if (selectedCategory !== "all") {
-            temp = temp.filter(p => p.category === selectedCategory);
+            temp = temp.filter((p) => p.category === selectedCategory);
         }
-        
-        // Filter by search term (only search in title)
+
         if (search.trim()) {
-            temp = temp.filter(p => 
+            temp = temp.filter((p) =>
                 p.title.toLowerCase().includes(search.toLowerCase())
             );
         }
-        
+
         setFilteredProducts(temp);
     }, [search, selectedCategory, products]);
 
-    const ThemeTab = ({ themeKey, theme, isActive, onClick }) => {
+    const ThemeTab = ({ themeKey, theme, isActive, onClick }: ThemeTabProps) => {
         const Icon = theme.icon;
         return (
             <button
@@ -143,7 +156,7 @@ const Home = () => {
         );
     };
 
-    return (
+     return (
         <div className="main-container">
             {/* <Navbar /> */}
             <div className="content-wrapper">
